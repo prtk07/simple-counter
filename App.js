@@ -1,21 +1,20 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
 
+let timer;
 export default function App() {
   const [counter, setCounter] = useState(0);
-  const [time, setTime] = useState([]);
-  // const [clear, setClear] = useState(null);
 
-  const increment = () => {
-    setCounter((counter) => counter + 1);
+  const handlePressOut = (constant) => {
+    setCounter((counter) => counter + constant);
+    clearInterval(timer);
   };
 
-  const decrement = () => {
-    setCounter((counter) => counter - 1);
+  const handlePressIn = (constant) => {
+    timer = setInterval(() => {
+      setCounter((counter) => counter + constant);
+    }, 200);
   };
-
-  const handleLongPress = () => {};
 
   return (
     <View style={styles.container}>
@@ -25,15 +24,14 @@ export default function App() {
       </View>
       <View style={styles.buttongroup}>
         <TouchableHighlight
-          // onPress={decrement}
-          onPressIn={(e) => {
-            e.preventDefault();
-            decrement();
-            let timer = setInterval(decrement, 200);
-            setTime([...time, timer]);
-          }}
           onPressOut={() => {
-            time.forEach(clearInterval);
+            handlePressOut(-1);
+          }}
+          onPressIn={() => {
+            handlePressIn(-1);
+          }}
+          onLongPress={(e) => {
+            if (e.cancelable) e.preventDefault();
           }}
           underlayColor="white"
         >
@@ -43,16 +41,14 @@ export default function App() {
         </TouchableHighlight>
 
         <TouchableHighlight
-          // onPress={increment}
-          onPressIn={(e) => {
-            e.preventDefault();
-
-            increment();
-            let timer = setInterval(increment, 200);
-            setTime([...time, timer]);
-          }}
           onPressOut={() => {
-            time.forEach(clearInterval);
+            handlePressOut(1);
+          }}
+          onPressIn={() => {
+            handlePressIn(1);
+          }}
+          onLongPress={(e) => {
+            if (e.cancelable) e.preventDefault();
           }}
           underlayColor="white"
         >
